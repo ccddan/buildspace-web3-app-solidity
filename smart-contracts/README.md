@@ -1,4 +1,4 @@
-# Buy Me A Coffee - Smart Contracts
+# Build a Web3 App With Solidity - BuildSpace - Smart Contracts
 
 ## Requirements
 

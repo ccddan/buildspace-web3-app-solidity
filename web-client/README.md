@@ -1,4 +1,4 @@
-# Buy Me A Coffee - Web Client
+# Build a Web3 App With Solidity - BuildSpace - Web Client
 
 ## Requirements
 

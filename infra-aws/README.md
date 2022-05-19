@@ -1,4 +1,4 @@
-# Buy Me A Coffee - AWS Infrastructure
+# Build a Web3 App With Solidity - BuildSpace - AWS Infrastructure
 
 ## Requirements
 
