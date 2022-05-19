@@ -11,6 +11,17 @@
     "release": "npm run build && npm run export",
     "artifacts": "cp -r out/* ../artifacts/web-client"
   },
+  "keywords": [
+    "Solidity",
+    "Hardhat",
+    "BuildSpace"
+  ],
+  "author": "ccddan",
+  "license": "ISC",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/ccddan/buildspace-web3-app-solidity.git"
+  },
   "dependencies": {
     "next": "12.1.6",
     "react": "18.1.0",
