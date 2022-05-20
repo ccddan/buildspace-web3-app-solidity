@@ -19,6 +19,7 @@ const Home: NextPage = () => {
   });
 
   const [totalWaves, setTotalWaves] = useState(-1);
+  const [waveMessage, setWaveMessage] = useState("");
 
   const loadTotalWavesFn = useCallback(() => {
     async function fn() {
@@ -44,7 +45,7 @@ const Home: NextPage = () => {
   const wave = async () => {
     try {
       console.log("send new wave");
-      const tx = await contract.wave();
+      const tx = await contract.wave(waveMessage || "[Empty]");
       await tx.wait();
       console.log("wave has been sent");
 
@@ -75,7 +76,14 @@ const Home: NextPage = () => {
             Connect your Ethereum wallet and wave at me!
           </div>
 
-          <button className="waveButton" onClick={wave}>
+          <input
+            className="waveMessage"
+            type="text"
+            placeholder="Wave Message"
+            onChange={(e) => setWaveMessage(e.target.value)}
+            disabled={!data}
+          />
+          <button className="waveButton" onClick={wave} disabled={!data}>
             〰️ Wave 〰️
           </button>
           <br />
