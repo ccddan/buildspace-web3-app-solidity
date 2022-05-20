@@ -1,53 +1,122 @@
+import { copyFileSync, mkdirSync, writeFileSync } from "fs";
 import hre, { ethers } from "hardhat";
 
 import { join } from "path";
-import { writeFileSync } from "fs";
 
 async function main() {
-  const contractName = "WavePortal";
-  const WavePortal = await ethers.getContractFactory(contractName);
+  // WavePortal
+  const wavePortalContractName = "WavePortal";
+  const WavePortal = await ethers.getContractFactory(wavePortalContractName);
   const wavePortal = await WavePortal.deploy();
-
   await wavePortal.deployed();
 
-  console.log(`Contract ${contractName}:`);
-  console.log("\tAddress:", wavePortal.address);
-  console.log("\tNetwork:", hre.network.name);
-  console.log("");
+  console.log("Network:", hre.network.name);
+  console.log("Contracts:");
+  console.log(`\t${wavePortalContractName}:`);
+  console.log("\t\tAddress:", wavePortal.address);
+  console.log("\n\n");
 
-  const exportFile = join(
-    __dirname,
-    "..",
-    "artifacts",
-    "contracts",
-    `${contractName}.sol`,
-    `${contractName}.${hre.network.name}.addr.json`
-  );
-  const exportFileTimestamp = exportFile.replace(
-    ".addr.",
-    `.addr-${new Date().toISOString()}.`
-  );
-  const fileData = JSON.stringify(
-    {
-      name: contractName,
-      addr: wavePortal.address,
-      network: hre.network.name,
-    },
-    null,
-    2
-  );
-  writeFileSync(exportFile, fileData, { flag: "w" });
-  writeFileSync(exportFileTimestamp, fileData);
-
-  console.log(
-    "\tDetails exported at:\n\t\t",
-    exportFile,
-    "\n\t",
-    exportFileTimestamp
-  );
+  return {
+    network: hre.network.name,
+    timestamp: new Date().toISOString(),
+    contracts: [
+      {
+        name: wavePortalContractName,
+        addr: wavePortal.address,
+      },
+    ],
+  };
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+  .then((result) => {
+    console.log("Processing Deployed Contracts...");
+
+    const compiledContractsPath = join(
+      __dirname,
+      "..",
+      "artifacts",
+      "contracts"
+    );
+
+    for (let contract of result.contracts) {
+      console.log(`Exporting ${contract.name}:`);
+      // DBG
+      console.log("\tDBG:");
+      const compiledContractDbgFile = join(
+        compiledContractsPath,
+        `${contract.name}.sol`,
+        `${contract.name}.dbg.json`
+      );
+      const compiledContractDbgFileNetwork = compiledContractDbgFile.replace(
+        ".json",
+        `.${result.network}.json`
+      );
+      copyFileSync(compiledContractDbgFile, compiledContractDbgFileNetwork);
+      console.log("\t\t", compiledContractDbgFileNetwork);
+
+      const compiledContractDbgFileNetworkTimestamp =
+        compiledContractDbgFileNetwork.replace(
+          ".json",
+          `_${result.timestamp}.json`
+        );
+      copyFileSync(
+        compiledContractDbgFile,
+        compiledContractDbgFileNetworkTimestamp
+      );
+      console.log("\t\t", compiledContractDbgFileNetworkTimestamp);
+
+      // Contract ABI
+      console.log("\tABI:");
+      const compiledContractFile = join(
+        compiledContractsPath,
+        `${contract.name}.sol`,
+        `${contract.name}.json`
+      );
+      const compiledContractFileNetwork = compiledContractFile.replace(
+        ".json",
+        `.${result.network}.json`
+      );
+      copyFileSync(compiledContractFile, compiledContractFileNetwork);
+      console.log("\t\t", compiledContractFileNetwork);
+
+      const compiledContractFileNetworkTimestamp =
+        compiledContractFileNetwork.replace(
+          ".json",
+          `_${result.timestamp}.json`
+        );
+      copyFileSync(compiledContractFile, compiledContractFileNetworkTimestamp);
+      console.log("\t\t", compiledContractFileNetworkTimestamp);
+
+      // Info
+      console.log("\tInfo:");
+      const contractInfoFile = compiledContractFile.replace(
+        ".json",
+        ".addr.json"
+      );
+      writeFileSync(contractInfoFile, JSON.stringify(contract, null, 2), {
+        flag: "w",
+      });
+      console.log("\t\t", contractInfoFile);
+
+      const contractInfoFileNetwork = contractInfoFile.replace(
+        ".json",
+        `.${result.network}.json`
+      );
+      copyFileSync(contractInfoFile, contractInfoFileNetwork);
+      console.log("\t\t", contractInfoFileNetwork);
+
+      const contractInfoFileNetworkTimestamp = contractInfoFileNetwork.replace(
+        ".json",
+        `_${result.timestamp}.json`
+      );
+      copyFileSync(contractInfoFile, contractInfoFileNetworkTimestamp);
+      console.log("\t\t", contractInfoFileNetworkTimestamp, "\n\n");
+    }
+
+    console.log("Done.");
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
