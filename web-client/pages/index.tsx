@@ -1,3 +1,4 @@
+import { BigNumber, ethers } from "ethers";
 import { useAccount, useContract, useSigner } from "wagmi";
 import { useCallback, useEffect, useState } from "react";
 
@@ -5,7 +6,6 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Head from "next/head";
 import type { NextPage } from "next";
 import config from "@config";
-import { ethers } from "ethers";
 
 const Home: NextPage = () => {
   const { data } = useAccount();
@@ -20,6 +20,9 @@ const Home: NextPage = () => {
 
   const [totalWaves, setTotalWaves] = useState(-1);
   const [waveMessage, setWaveMessage] = useState("");
+  const [waves, setWaves] = useState<
+    Array<{ waver: string; message: string; timestamp: BigNumber }>
+  >([]);
 
   const loadTotalWavesFn = useCallback(() => {
     async function fn() {
@@ -28,6 +31,11 @@ const Home: NextPage = () => {
         const _totalWaves = await contract.getTotalWaves();
         console.log("total waves:", _totalWaves);
         setTotalWaves(_totalWaves);
+
+        console.log("getting list of waves...");
+        const wavesList = await contract.getWaves();
+        console.log("waves list:", wavesList);
+        setWaves(wavesList);
       } catch (error) {
         console.warn("Failed to get total waves:", error);
       }
@@ -92,6 +100,20 @@ const Home: NextPage = () => {
               Total waves: <b>{totalWaves.toString()}</b>
             </p>
           )}
+          <br />
+          <ul>
+            {data &&
+              waves.length > 0 &&
+              waves.map((wave, idx) => {
+                return (
+                  <li key={idx}>
+                    <p>Timestamp: {wave.timestamp.toString()}</p>
+                    <p>Waver: {wave.waver}</p>
+                    <p>Message: {wave.message}</p>
+                  </li>
+                );
+              })}
+          </ul>
         </div>
       </div>
     </div>
