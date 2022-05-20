@@ -49,3 +49,12 @@ a {
   border-radius: 5px;
 
 }
+
+.connectButton {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: right;
+  padding: 20px;
+  direction: rtl;
+}
