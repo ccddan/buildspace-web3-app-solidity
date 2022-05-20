@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from "ethers";
-import { useAccount, useContract, useSigner } from "wagmi";
+import { useAccount, useContract, useContractEvent, useSigner } from "wagmi";
 import { useCallback, useEffect, useState } from "react";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -23,6 +23,21 @@ const Home: NextPage = () => {
   const [waves, setWaves] = useState<
     Array<{ waver: string; message: string; timestamp: BigNumber }>
   >([]);
+
+  useContractEvent(
+    {
+      addressOrName: config.blockchain.contract[CONTRACT_NETWORK].info.addr,
+      contractInterface: config.blockchain.contract[CONTRACT_NETWORK].specs.abi,
+    },
+    "NewWave",
+    async (newWave) => {
+      console.log("NewWave event:", newWave);
+      if (!newWave.includes(waveMessage)) {
+        console.log("Wave created somewhere else, refreshing waves...");
+        loadTotalWavesFn();
+      }
+    }
+  );
 
   const loadTotalWavesFn = useCallback(() => {
     async function fn() {
