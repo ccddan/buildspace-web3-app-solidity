@@ -18,7 +18,7 @@ const Home: NextPage = () => {
     signerOrProvider: signerData,
   });
 
-  const [totalWaves, setTotalWaves] = useState(-1);
+  const [totalWaves, setTotalWaves] = useState(0);
   const [waveMessage, setWaveMessage] = useState("");
   const [waves, setWaves] = useState<
     Array<{ waver: string; message: string; timestamp: BigNumber }>
