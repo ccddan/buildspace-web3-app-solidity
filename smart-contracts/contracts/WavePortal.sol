@@ -18,7 +18,7 @@ contract WavePortal {
 
     Wave[] private waves;
 
-    constructor() {
+    constructor() payable {
         console.log("Contract initialized");
     }
 

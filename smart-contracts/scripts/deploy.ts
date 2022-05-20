@@ -4,16 +4,23 @@ import hre, { ethers } from "hardhat";
 import { join } from "path";
 
 async function main() {
+  const initialContractBalance = ethers.utils.parseEther(
+    hre.network.name === "localhost" ? "1" : ".001"
+  );
+
   // WavePortal
   const wavePortalContractName = "WavePortal";
   const WavePortal = await ethers.getContractFactory(wavePortalContractName);
-  const wavePortal = await WavePortal.deploy();
+  const wavePortal = await WavePortal.deploy({
+    value: initialContractBalance,
+  });
   await wavePortal.deployed();
 
   console.log("Network:", hre.network.name);
   console.log("Contracts:");
   console.log(`\t${wavePortalContractName}:`);
   console.log("\t\tAddress:", wavePortal.address);
+  console.log("\t\tInitial Balance:", initialContractBalance, "ETH");
   console.log("\n\n");
 
   return {
