@@ -32,10 +32,7 @@ const Home: NextPage = () => {
     "NewWave",
     async (newWave) => {
       console.log("NewWave event:", newWave);
-      if (!newWave.includes(waveMessage)) {
-        console.log("Wave created somewhere else, refreshing waves...");
-        loadTotalWavesFn();
-      }
+      await loadTotalWavesFn();
     }
   );
 
@@ -44,7 +41,7 @@ const Home: NextPage = () => {
       try {
         console.log("getting total waves...");
         const _totalWaves = await contract.getTotalWaves();
-        console.log("total waves:", _totalWaves);
+        console.log("total waves:", _totalWaves.toString());
         setTotalWaves(_totalWaves);
 
         console.log("getting list of waves...");
@@ -56,8 +53,8 @@ const Home: NextPage = () => {
       }
     }
 
-    if (contract) fn();
-  }, [contract]);
+    if (signerData && contract) fn();
+  }, [signerData, contract]);
 
   useEffect(() => {
     if (data && signerData && contract) {
@@ -71,8 +68,6 @@ const Home: NextPage = () => {
       const tx = await contract.wave(waveMessage || "[Empty]");
       await tx.wait();
       console.log("wave has been sent");
-
-      await loadTotalWavesFn();
     } catch (error) {
       console.warn("Failed to send wave:", error);
     }
