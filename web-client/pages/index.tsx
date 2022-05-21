@@ -134,6 +134,7 @@ const Home: NextPage = () => {
             {data &&
               waves.length > 0 &&
               waves.map((wave, idx) => {
+                wave = waves[waves.length - (idx + 1)];
                 return (
                   <li key={idx}>
                     <p>Timestamp: {wave.timestamp.toString()}</p>
