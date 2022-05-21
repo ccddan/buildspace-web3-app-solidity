@@ -7,6 +7,7 @@ import "hardhat/console.sol";
 contract WavePortal {
     uint256 private totalWaves;
     mapping(address => uint256) private wavers;
+    mapping(address => uint256) public lastWavedAt;
 
     event NewWave(address indexed from, string message, uint256 timestamp);
     event EthSent(address indexed waver, uint256 value, uint256 timestamp);
@@ -28,8 +29,14 @@ contract WavePortal {
     }
 
     function wave(string memory message) public {
+        require(
+            lastWavedAt[msg.sender] + 12 hours <= block.timestamp,
+            "Wait 12 hours from your last txn"
+        );
+
         totalWaves += 1;
         wavers[msg.sender] += 1;
+        lastWavedAt[msg.sender] = block.timestamp;
 
         waves.push(Wave(msg.sender, message, block.timestamp));
         emit NewWave(msg.sender, message, block.timestamp);
