@@ -9,6 +9,7 @@ contract WavePortal {
     mapping(address => uint256) private wavers;
 
     event NewWave(address indexed from, string message, uint256 timestamp);
+    event EthSent(address indexed waver, uint256 value, uint256 timestamp);
 
     struct Wave {
         address waver;
@@ -30,6 +31,23 @@ contract WavePortal {
         emit NewWave(msg.sender, message, block.timestamp);
 
         console.log("%s has waved!", msg.sender);
+
+        claimEth();
+    }
+
+    function claimEth() public {
+        console.log("Sending free ETH");
+
+        require(wavers[msg.sender] > 0, "First send wave");
+        uint256 prizeAmount = 0.00001 ether;
+        require(prizeAmount <= address(this).balance, "Not enough founds");
+
+        (bool success, ) = (payable(address(msg.sender))).call{
+            value: prizeAmount
+        }("");
+        require(success, "Failed to send ETH");
+
+        emit EthSent(msg.sender, prizeAmount, block.timestamp);
     }
 
     function getTotalWaves() public view returns (uint256) {
