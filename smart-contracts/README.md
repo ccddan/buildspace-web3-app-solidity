@@ -16,7 +16,7 @@ $ npx hardhat node # for local development only
 $ npm test
 
 $ npx hardhat run scripts/deploy.ts --network {localhost|goerli}
-$ npx hardhat verify --network {localhost|goerli} {DEPLOYED_CONTRACT_ADDRESS}
-
 $ npm run artifacts
+
+$ npx hardhat verify --network {localhost|goerli} {DEPLOYED_CONTRACT_ADDRESS}
 ```
