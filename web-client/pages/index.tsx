@@ -101,6 +101,9 @@ const Home: NextPage = () => {
       console.log("wave has been sent");
     } catch (error) {
       console.warn("Failed to send wave:", error);
+      if (`${error}`.includes("hours from your last")) {
+        alert("Wait 12 hours from your last wave");
+      }
     }
   };
 
