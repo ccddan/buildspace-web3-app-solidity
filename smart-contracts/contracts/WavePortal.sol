@@ -23,6 +23,10 @@ contract WavePortal {
         console.log("Contract initialized");
     }
 
+    function getRandomNumber() private view returns (uint256) {
+        return (block.timestamp + block.difficulty) % 100;
+    }
+
     function wave(string memory message) public {
         totalWaves += 1;
         wavers[msg.sender] += 1;
@@ -32,7 +36,10 @@ contract WavePortal {
 
         console.log("%s has waved!", msg.sender);
 
-        claimEth();
+        if (getRandomNumber() <= 15) {
+            console.log("waver has win ETH");
+            claimEth();
+        }
     }
 
     function claimEth() public {
