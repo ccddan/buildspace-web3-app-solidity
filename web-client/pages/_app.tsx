@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { Chain, WagmiProvider, chain, createClient } from "wagmi";
+import { Chain, WagmiProvider, createClient } from "wagmi";
 import {
   RainbowKitProvider,
   apiProvider,
@@ -37,29 +37,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     },
     testnet: true,
   };
-  const polygonMumbaiChain: Chain = {
-    id: 80001,
-    name: "Mumbai",
-    nativeCurrency: {
-      decimals: 18,
-      name: "MATIC",
-      symbol: "MATIC",
-    },
-    rpcUrls: {
-      default: config.blockchain.network.mumbai.host,
-    },
-    blockExplorers: {
-      etherscan: {
-        name: "Mumbai Polygon Scan",
-        url: "https://mumbai.polygonscan.com/",
-      },
-      default: {
-        name: "Mumbai Polygon Scan",
-        url: "https://mumbai.polygonscan.com/",
-      },
-    },
-    testnet: true,
-  };
   const localhostChain: Chain = {
     id: config.blockchain.network.localhost.chainId,
     name: "Hardhat",
@@ -75,7 +52,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   const { provider, chains } = configureChains(
-    [/*goerliChain , chain.polygon, polygonMumbaiChain, */ localhostChain],
+    [goerliChain, localhostChain],
     [
       apiProvider.jsonRpc((chain) => ({ rpcUrl: `${chain.rpcUrls.default}` })),
       apiProvider.fallback(),
