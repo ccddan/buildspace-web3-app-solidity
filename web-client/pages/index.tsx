@@ -1,5 +1,11 @@
 import { BigNumber, ethers } from "ethers";
-import { useAccount, useContract, useContractEvent, useSigner } from "wagmi";
+import {
+  useAccount,
+  useContract,
+  useContractEvent,
+  useNetwork,
+  useSigner,
+} from "wagmi";
 import { useCallback, useEffect, useState } from "react";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -10,8 +16,14 @@ import config from "@config";
 const Home: NextPage = () => {
   const { data } = useAccount();
   const { data: signerData } = useSigner();
+  const { activeChain } = useNetwork();
+  console.log("active chain:", activeChain);
 
-  const CONTRACT_NETWORK = "localhost";
+  const CONTRACT_NETWORK = (
+    activeChain && activeChain.name && activeChain.name == "Hardhat"
+      ? "localhost"
+      : "goerli"
+  ) as "goerli" | "localhost";
   const contract = useContract({
     addressOrName: config.blockchain.contract[CONTRACT_NETWORK].info.addr,
     contractInterface: config.blockchain.contract[CONTRACT_NETWORK].specs.abi,
