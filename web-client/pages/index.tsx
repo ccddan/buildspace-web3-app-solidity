@@ -36,6 +36,25 @@ const Home: NextPage = () => {
     }
   );
 
+  useContractEvent(
+    {
+      addressOrName: config.blockchain.contract[CONTRACT_NETWORK].info.addr,
+      contractInterface: config.blockchain.contract[CONTRACT_NETWORK].specs.abi,
+    },
+    "EthSent",
+    async (ethSent) => {
+      // ethSent event = [waver, value, uint256 timestamp]
+      console.log("Eth has been claimed");
+      if (data && ethSent[0] == data.address) {
+        console.log(
+          "you have received",
+          ethers.utils.formatEther(ethSent[1]),
+          "ETH"
+        );
+      }
+    }
+  );
+
   const loadTotalWavesFn = useCallback(() => {
     async function fn() {
       try {
